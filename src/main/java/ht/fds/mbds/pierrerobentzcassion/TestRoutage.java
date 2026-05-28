@@ -17,11 +17,14 @@ import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.rag.query.router.LanguageModelQueryRouter;
+import dev.langchain4j.service.AiServices;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
+import ht.fds.mbds.pierrerobentzcassion.llm.Assistant;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,8 +84,8 @@ public class TestRoutage {
         // Creation du querryRouter
         //Creation descriptions
         HashMap<ContentRetriever, String> descriptions = new HashMap<>();
-        descriptions.put(retriever1, "Ce retriever contient des informations sur le RAG");
-        descriptions.put(retriever2, "Ce retriever contient des informations sur le pouvoir");
+        descriptions.put(retriever1, "RAG");
+        descriptions.put(retriever2, "Les 48 lois du pouvoir");
         LanguageModelQueryRouter queryRouter = new LanguageModelQueryRouter(model, descriptions);
 
          // Creation d'un retrievalAugmentor
@@ -90,7 +93,30 @@ public class TestRoutage {
                 .queryRouter(queryRouter)
                 .build();
 
+        // Creation de l'assistant
+        Assistant assistant = AiServices.builder(Assistant.class)
+                .chatModel(model)
+                .retrievalAugmentor(retrievalAugmentor)
+                .build();
 
+        try (Scanner scanner = new Scanner(System.in)) {
+            while (true) {
+                System.out.println("==================================================");
+                System.out.println("Posez votre question : ");
+                String question = scanner.nextLine();
+                if (question.isBlank()) {
+                    continue;
+                }
+                System.out.println("==================================================");
+                if ("fin".equalsIgnoreCase(question)) {
+                    break;
+                }
+                String reponse = assistant.chat(question);
+                System.out.println("Assistant : " + reponse);
+                System.out.println("==================================================");
+            }
+
+        }
 
     }
 }
