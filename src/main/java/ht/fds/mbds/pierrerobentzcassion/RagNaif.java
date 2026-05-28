@@ -44,6 +44,7 @@ public class RagNaif {
         ChatModel model = GoogleAiGeminiChatModel.builder()
                 .apiKey(System.getenv("GEMINI_KEY"))
                 .modelName("gemini-2.5-flash")
+                .logRequestsAndResponses(true)
                 .build();
         // 1. Creation du document Parser
         DocumentParser documentParser = new ApacheTikaDocumentParser();
