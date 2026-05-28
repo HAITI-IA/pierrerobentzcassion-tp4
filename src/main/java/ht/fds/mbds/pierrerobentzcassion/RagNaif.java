@@ -45,6 +45,10 @@ public class RagNaif {
         EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
         // 5. Créer les embeddings pour les segments.
         List<Embedding> embeddings = embeddingModel.embedAll(segments).content();
+        // 6. Ajouter les embeddings et les segments associés dans un magasin d'embeddings en mémoire
+        EmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
+        embeddingStore.addAll(embeddings, segments);
+
 
     }
 }
