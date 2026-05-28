@@ -23,9 +23,23 @@ import ht.fds.mbds.pierrerobentzcassion.llm.Assistant;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.slf4j.*;
 
 public class RagNaif {
+    private static void configureLogger() {
+        // Configure le logger sous-jacent (java.util.logging)
+        Logger packageLogger = Logger.getLogger("dev.langchain4j");
+        packageLogger.setLevel(Level.FINE); // Ajuster niveau
+        // Ajouter un handler pour la console pour faire afficher les logs
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setLevel(Level.FINE);
+        packageLogger.addHandler(handler);
+    }
     public static void main(String[] args) {
+        configureLogger();
         // Creation du chatModel
         ChatModel model = GoogleAiGeminiChatModel.builder()
                 .apiKey(System.getenv("GEMINI_KEY"))
