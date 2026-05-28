@@ -8,9 +8,12 @@ import dev.langchain4j.data.document.loader.ClassPathDocumentLoader;
 import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
 import dev.langchain4j.data.document.parser.apache.tika.ApacheTikaDocumentParser;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
+import dev.langchain4j.data.embedding.Embedding;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.ChatModel;
+import dev.langchain4j.model.embedding.EmbeddingModel;
+import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.service.AiServices;
@@ -20,6 +23,7 @@ import ht.fds.mbds.pierrerobentzcassion.llm.Assistant;
 
 import java.nio.file.FileSystems;
 import java.nio.file.PathMatcher;
+import java.util.ArrayList;
 import java.util.List;
 
 public class RagNaif {
@@ -36,14 +40,11 @@ public class RagNaif {
 
         // 3. Creation d'un document Splitter
         DocumentSplitter documentSplitter = DocumentSplitters.recursive(300,30,300);
-        List < TextSegment> chunks = documentSplitter.split(document);
-
-        EmbeddingStore embeddingStore = new InMemoryEmbeddingStore<>();
-        Assistant assistant = AiServices.builder(Assistant.class)
-                .chatModel(model)
-                .chatMemory(MessageWindowChatMemory.withMaxMessages(20))
-                .contentRetriever(EmbeddingStoreContentRetriever.from(embeddingStore))
-                .build();
+        List < TextSegment> segments = documentSplitter.split(document);
+        // 4. Création d'un modèle d'embedding.
+        EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
+        // 5. Créer les embeddings pour les segments.
+        List<Embedding> embeddings = embeddingModel.embedAll(segments).content();
 
     }
 }
