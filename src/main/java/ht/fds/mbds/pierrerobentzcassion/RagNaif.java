@@ -5,7 +5,6 @@ import dev.langchain4j.data.document.Document;
 import dev.langchain4j.data.document.DocumentParser;
 import dev.langchain4j.data.document.DocumentSplitter;
 import dev.langchain4j.data.document.loader.ClassPathDocumentLoader;
-import dev.langchain4j.data.document.loader.FileSystemDocumentLoader;
 import dev.langchain4j.data.document.parser.apache.tika.ApacheTikaDocumentParser;
 import dev.langchain4j.data.document.splitter.DocumentSplitters;
 import dev.langchain4j.data.embedding.Embedding;
@@ -22,9 +21,6 @@ import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 import ht.fds.mbds.pierrerobentzcassion.llm.Assistant;
 
-import java.nio.file.FileSystems;
-import java.nio.file.PathMatcher;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -86,6 +82,7 @@ public class RagNaif {
                 System.out.println("Assistant : " + reponse);
                 System.out.println("==================================================");
             }
+
         }
 
 
