@@ -15,6 +15,7 @@ import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
+import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.store.embedding.EmbeddingStore;
@@ -48,6 +49,16 @@ public class RagNaif {
         // 6. Ajouter les embeddings et les segments associés dans un magasin d'embeddings en mémoire
         EmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
         embeddingStore.addAll(embeddings, segments);
+        //Phase 2 du RAG
+        // 1. Création du ContentRetriever.
+        ContentRetriever contentRetriever = EmbeddingStoreContentRetriever.builder()
+                .embeddingStore(embeddingStore)
+                .embeddingModel(embeddingModel)
+                .maxResults(2) // Je precise que je veux deux resultats.
+                .minScore(0.5) // score supérieur à 0.5 ou score minimal 0.5 pour similarité
+                .build();
+
+
 
 
     }
