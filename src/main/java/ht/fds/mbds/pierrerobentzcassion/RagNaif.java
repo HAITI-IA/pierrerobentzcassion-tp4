@@ -14,8 +14,12 @@ import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.embedding.EmbeddingModel;
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel;
 import dev.langchain4j.model.googleai.GoogleAiGeminiChatModel;
+import dev.langchain4j.rag.DefaultRetrievalAugmentor;
+import dev.langchain4j.rag.RetrievalAugmentor;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
+import dev.langchain4j.rag.query.transformer.CompressingQueryTransformer;
+import dev.langchain4j.rag.query.transformer.QueryTransformer;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
@@ -69,6 +73,14 @@ public class RagNaif {
                 .maxResults(2) // Je precise que je veux deux resultats.
                 .minScore(0.5) // score supérieur à 0.5 ou score minimal 0.5 pour similarité
                 .build();
+        // Test 3 : Utilisation d'un QueryTransformer pour ameliorer la reponse
+        QueryTransformer queryTransformer = CompressingQueryTransformer.builder()
+                .chatModel(model)
+                .build();
+        RetrievalAugmentor retrievalAugmentor = DefaultRetrievalAugmentor.builder()
+                .queryTransformer(queryTransformer)
+                .contentRetriever(contentRetriever)
+                .build();
 
         // 2. Créez une mémoire pour 10 messages.
         MessageWindowChatMemory chatMemory = MessageWindowChatMemory.builder()
@@ -78,7 +90,7 @@ public class RagNaif {
         Assistant assistant = AiServices.builder(Assistant.class)
                 .chatModel(model)
                 .chatMemory(chatMemory)
-                .contentRetriever(contentRetriever)
+                .retrievalAugmentor(retrievalAugmentor)
                 .build();
 
         try (Scanner scanner = new Scanner(System.in)) {
