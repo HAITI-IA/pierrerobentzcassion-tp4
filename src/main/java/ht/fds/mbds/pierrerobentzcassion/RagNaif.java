@@ -62,6 +62,13 @@ public class RagNaif {
         MessageWindowChatMemory chatMemory = MessageWindowChatMemory.builder()
                 .maxMessages(10)
                 .build();
+        // 3.Création de l'assistant avec le pattern builder.
+        Assistant assistant = AiServices.builder(Assistant.class)
+                .chatModel(model)
+                .chatMemory(chatMemory)
+                .contentRetriever(contentRetriever)
+                .build();
+
 
 
     }
