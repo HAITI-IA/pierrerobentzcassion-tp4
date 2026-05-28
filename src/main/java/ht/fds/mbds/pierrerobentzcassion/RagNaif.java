@@ -40,7 +40,7 @@ public class RagNaif {
         Document document = ClassPathDocumentLoader.loadDocument("rag.pdf", documentParser);
 
         // 3. Creation d'un document Splitter
-        DocumentSplitter documentSplitter = DocumentSplitters.recursive(300,30,300);
+        DocumentSplitter documentSplitter = DocumentSplitters.recursive(300,30);
         List < TextSegment> segments = documentSplitter.split(document);
         // 4. Création d'un modèle d'embedding.
         EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
@@ -58,7 +58,10 @@ public class RagNaif {
                 .minScore(0.5) // score supérieur à 0.5 ou score minimal 0.5 pour similarité
                 .build();
 
-
+        // 2. Créez une mémoire pour 10 messages.
+        MessageWindowChatMemory chatMemory = MessageWindowChatMemory.builder()
+                .maxMessages(10)
+                .build();
 
 
     }
